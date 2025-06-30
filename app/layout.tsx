@@ -24,7 +24,7 @@ export default function RootLayout({
       <body>
         <TanStackProvider>
           <Header />
-          <main>
+          <main style={{ flex: 1 }}>
             {children}
             {modal}
           </main>
