@@ -1,29 +1,22 @@
-import NotePreviewClient from "@/app/@modal/(.)notes/[id]/NotePreview.client";
 import { fetchNoteById } from "@/lib/api";
+import NotePreviewClient from "./NotePreview.client";
 import {
-  QueryClient,
   HydrationBoundary,
+  QueryClient,
   dehydrate,
 } from "@tanstack/react-query";
 
-type NotePreviewModalProps = {
+export default async function NotePreview({
+  params,
+}: {
   params: { id: string };
-};
-
-const NotePreview = async ({ params }: NotePreviewModalProps) => {
-  const { id } = params;
-
-  const parsedId = Number(Array.isArray(id) ? id[0] : id);
-
-  if (isNaN(parsedId) || parsedId <= 0) {
-    throw new Error(`Invalid note ID: ${id}`);
-  }
-
+}) {
   const queryClient = new QueryClient();
+  const id = Number(params.id);
 
   await queryClient.prefetchQuery({
-    queryKey: ["note", parsedId],
-    queryFn: () => fetchNoteById(parsedId),
+    queryKey: ["note", id],
+    queryFn: () => fetchNoteById(id),
   });
 
   return (
@@ -31,6 +24,4 @@ const NotePreview = async ({ params }: NotePreviewModalProps) => {
       <NotePreviewClient />
     </HydrationBoundary>
   );
-};
-
-export default NotePreview;
+}
