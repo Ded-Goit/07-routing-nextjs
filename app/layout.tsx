@@ -12,38 +12,21 @@ export const metadata: Metadata = {
   },
 };
 
-/*export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en">
-      <body>
-        <TanStackProvider>
-          <Header />
-          <main style={{ flex: 1 }}>{children}</main>
-          <Footer />
-        </TanStackProvider>
-      </body>
-    </html>
-  );
-}*/
 export default function RootLayout({
   children,
-  modal, // ✅ Додали modal
+  modal,
 }: Readonly<{
   children: React.ReactNode;
-  modal: React.ReactNode; // ✅ Оголосили modal
+  modal: React.ReactNode;
 }>) {
   return (
     <html lang="en">
       <body>
         <TanStackProvider>
           <Header />
-          <main style={{ flex: 1 }}>
+          <main>
             {children}
-            {modal} {/* ✅ Рендеримо modal */}
+            {modal}
           </main>
           <Footer />
         </TanStackProvider>
