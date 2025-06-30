@@ -11,6 +11,11 @@ const TagsMenu = () => {
   const handleOpenMenu = () => {
     setIsOpenMenu(!isOpenMenu);
   };
+
+  const handleCloseMenu = () => {
+    setIsOpenMenu(false);
+  };
+
   return (
     <div className={css.menuContainer}>
       <button className={css.menuButton} onClick={handleOpenMenu}>
@@ -19,13 +24,21 @@ const TagsMenu = () => {
       {isOpenMenu && (
         <ul className={css.menuList}>
           <li className={css.menuItem}>
-            <Link href={`/notes/filter/all`} className={css.menuLink}>
+            <Link
+              href={`/notes/filter/all`}
+              className={css.menuLink}
+              onClick={handleCloseMenu}
+            >
               All notes
             </Link>
           </li>
           {tags.map((tag) => (
             <li className={css.menuItem} key={tag}>
-              <Link href={`/notes/filter/${tag}`} className={css.menuLink}>
+              <Link
+                href={`/notes/filter/${tag}`}
+                className={css.menuLink}
+                onClick={handleCloseMenu}
+              >
                 {tag}
               </Link>
             </li>
