@@ -1,34 +1,31 @@
 "use client";
 
-import css from "./TagsMenu.module.css";
 import Link from "next/link";
+import css from "./TagsMenu.module.css";
 import { useState } from "react";
 
-const TAGS = ["All", "Work", "Personal", "Meeting", "Shopping", "Todo"];
+const TagsMenu = () => {
+  const tags: string[] = ["Work", "Personal", "Meeting", "Shopping", "Todo"];
+  const [isOpenMenu, setIsOpenMenu] = useState(false);
 
-export default function TagsMenu() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleMenu = () => setIsOpen(!isOpen);
-
+  const handleOpenMenu = () => {
+    setIsOpenMenu(!isOpenMenu);
+  };
   return (
     <div className={css.menuContainer}>
-      <button
-        onClick={toggleMenu}
-        className={css.menuButton}
-        aria-expanded={isOpen}
-      >
+      <button className={css.menuButton} onClick={handleOpenMenu}>
         Notes ▾
       </button>
-      {isOpen && (
+      {isOpenMenu && (
         <ul className={css.menuList}>
-          {TAGS.map((tag) => (
-            <li key={tag} className={css.menuItem}>
-              <Link
-                href={tag === "All" ? "/notes/filter" : `/notes/filter/${tag}`}
-                className={css.menuLink}
-                onClick={() => setIsOpen(false)}
-              >
+          <li className={css.menuItem}>
+            <Link href={`/notes/filter/all`} className={css.menuLink}>
+              All notes
+            </Link>
+          </li>
+          {tags.map((tag) => (
+            <li className={css.menuItem} key={tag}>
+              <Link href={`/notes/filter/${tag}`} className={css.menuLink}>
                 {tag}
               </Link>
             </li>
@@ -37,4 +34,6 @@ export default function TagsMenu() {
       )}
     </div>
   );
-}
+};
+
+export default TagsMenu;
