@@ -1,39 +1,32 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { fetchNoteById } from "@/lib/api";
 import css from "./NoteDetails.module.css";
+import { useQuery } from "@tanstack/react-query";
+import { fetchNoteById } from "@/lib/api";
+import { PropagateLoader } from "react-spinners";
 
-export default function NoteDetailsClient() {
-  const params = useParams();
-  const idParam = params?.id;
-  const id = Number(idParam);
-
-  const isValidId = !isNaN(id) && id > 0;
+const NoteDetailsClient = () => {
+  const { id } = useParams<{ id: string }>();
+  const parseId = Number(id);
 
   const {
     data: note,
     isLoading,
     error,
-    isSuccess,
-    isError,
   } = useQuery({
-    queryKey: ["note", id],
-    queryFn: () => fetchNoteById(id),
-    enabled: isValidId, // виконується лише якщо id валідний
+    queryKey: ["note", parseId],
+    queryFn: () => fetchNoteById(parseId),
     refetchOnMount: false,
   });
-
-  if (!isValidId) {
+  if (isLoading)
     return (
-      <p className={css.errorMessage}>
-        Invalid note ID: <code>{String(idParam)}</code>
-      </p>
+      <div>
+        <PropagateLoader color="#0d6efd" size={11} speedMultiplier={2} />
+      </div>
     );
-  }
-
-  if (isError) throw error;
+  if (error) return <p>Something went wrong.</p>;
+  if (!note) return <p>Sorry, note not found.</p>;
 
   const formatDate = (isoDate: string): string => {
     const date = new Date(isoDate);
@@ -47,14 +40,8 @@ export default function NoteDetailsClient() {
   };
 
   return (
-    <div>
-      {isLoading && <p className={css.loadMessage}>Loading, please wait...</p>}
-
-      {!error && !note && !isLoading && (
-        <p className={css.errorMessage}>Note not found.</p>
-      )}
-
-      {note && isSuccess && (
+    <>
+      {note && (
         <div className={css.container}>
           <div className={css.item}>
             <div className={css.header}>
@@ -70,6 +57,8 @@ export default function NoteDetailsClient() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
-}
+};
+
+export default NoteDetailsClient;

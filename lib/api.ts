@@ -29,15 +29,18 @@ interface SearchParams {
   page: number;
   perPage: number;
   search?: string;
+  tag?: string;
 }
 
 // Fetch notes with optional search and pagination
 export async function fetchNotes(
   search: string,
-  page: number
+  page: number,
+  tag?: string
 ): Promise<NotesResponse> {
   const params: SearchParams = { page, perPage: PER_PAGE };
   if (search) params.search = search;
+  if (tag) params.tag = tag;
 
   try {
     const res = await axios.get<NotesResponse>("/notes", { params });

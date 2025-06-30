@@ -1,5 +1,4 @@
 "use client";
-
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import css from "./NotesPage.module.css";
 import NoteList from "@/components/NoteList/NoteList";
@@ -9,8 +8,6 @@ import Pagination from "@/components/Pagination/Pagination";
 import Modal from "@/components/Modal/Modal";
 import SearchBox from "@/components/SearchBox/SearchBox";
 import { useDebounce } from "use-debounce";
-import { PropagateLoader } from "react-spinners";
-import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import { Note } from "@/types/note";
 import NoteForm from "@/components/NoteForm/NoteForm";
 
@@ -21,25 +18,25 @@ type NotesClientProps = {
     notes: Note[];
     totalPages: number;
   };
+  tag: string;
 };
 
-export default function NotesClient({
-  query,
-  page,
-  initialData,
-}: NotesClientProps) {
-  const [currentPage, setCurrentPage] = useState(1);
+function NotesClient({ query, page, initialData, tag }: NotesClientProps) {
+  const [currentPage, setCurrentPage] = useState(page);
   const [isModalOpen, setIsOpenModal] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(query);
   const [debouncedText] = useDebounce(searchQuery, 300);
 
-  const { data, isSuccess, isPending, isError } = useQuery({
-    queryKey: ["notes", debouncedText, currentPage],
-    queryFn: () => fetchNotes(debouncedText, currentPage),
+  const { data, isSuccess, isError, error } = useQuery({
+    queryKey: ["notes", debouncedText, currentPage, tag],
+    queryFn: () => fetchNotes(debouncedText, currentPage, tag),
     placeholderData: keepPreviousData,
     initialData:
       debouncedText === query && currentPage === page ? initialData : undefined,
+    refetchOnMount: false,
   });
+
+  if (isError) throw error;
 
   useEffect(() => {
     setCurrentPage(1);
@@ -67,38 +64,12 @@ export default function NotesClient({
             marginPagesDisplayed={1}
           />
         )}
+
         <button className={css.button} onClick={() => setIsOpenModal(true)}>
           Create note +
         </button>
       </header>
-      {isError && <ErrorMessage />}
-
-      {isPending && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <PropagateLoader color="#0d6efd" size={11} speedMultiplier={2} />
-        </div>
-      )}
       {isSuccess && data.notes.length > 0 && <NoteList notes={data.notes} />}
-
-      {isSuccess && data.notes.length === 0 && (
-        <p
-          style={{
-            textAlign: "center",
-            fontSize: "1.2rem",
-            marginTop: "40px",
-            color: "#888",
-          }}
-        >
-          No notes found for this search.
-        </p>
-      )}
-
       {isModalOpen && (
         <Modal onClose={() => setIsOpenModal(false)}>
           <NoteForm onClose={() => setIsOpenModal(false)} />
@@ -107,3 +78,5 @@ export default function NotesClient({
     </div>
   );
 }
+
+export default NotesClient;

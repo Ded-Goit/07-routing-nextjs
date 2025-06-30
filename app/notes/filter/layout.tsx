@@ -1,12 +1,11 @@
 import css from "./LayoutNotes.module.css";
 
-export default function FilterLayout({
-  children,
-  sidebar,
-}: {
+type Props = {
   children: React.ReactNode;
   sidebar: React.ReactNode;
-}) {
+};
+
+export default function FilterLayout({ children, sidebar }: Props) {
   return (
     <div className={css.container}>
       <aside className={css.sidebar}>{sidebar}</aside>
