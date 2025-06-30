@@ -7,14 +7,19 @@ import { fetchNoteById } from "@/lib/api";
 import NoteDetailsClient from "@/app/notes/[id]/NoteDetails.client";
 
 type NoteDetailsProps = {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 };
 
 async function NoteDetails({ params }: NoteDetailsProps) {
-  const queryClient = new QueryClient();
+  const { id } = params;
 
-  const { id } = await params;
-  const parsedId = Number(id);
+  const parsedId = Number(Array.isArray(id) ? id[0] : id);
+
+  if (isNaN(parsedId) || parsedId <= 0) {
+    throw new Error(`Invalid note ID: ${id}`);
+  }
+
+  const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
     queryKey: ["note", parsedId],

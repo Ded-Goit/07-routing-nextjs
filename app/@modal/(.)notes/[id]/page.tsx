@@ -7,13 +7,19 @@ import {
 } from "@tanstack/react-query";
 
 type NotePreviewModalProps = {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 };
 
 const NotePreview = async ({ params }: NotePreviewModalProps) => {
-  const { id } = await params;
+  const { id } = params;
+
+  const parsedId = Number(Array.isArray(id) ? id[0] : id);
+
+  if (isNaN(parsedId) || parsedId <= 0) {
+    throw new Error(`Invalid note ID: ${id}`);
+  }
+
   const queryClient = new QueryClient();
-  const parsedId = Number(id);
 
   await queryClient.prefetchQuery({
     queryKey: ["note", parsedId],
@@ -22,8 +28,9 @@ const NotePreview = async ({ params }: NotePreviewModalProps) => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <NotePreviewClient />;
+      <NotePreviewClient />
     </HydrationBoundary>
   );
 };
+
 export default NotePreview;

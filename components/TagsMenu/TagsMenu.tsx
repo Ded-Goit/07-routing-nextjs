@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 const TAGS = ["All", "Work", "Personal", "Meeting", "Shopping", "Todo"];
+
 export default function TagsMenu() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -12,7 +13,11 @@ export default function TagsMenu() {
 
   return (
     <div className={css.menuContainer}>
-      <button onClick={toggleMenu} className={css.menuButton}>
+      <button
+        onClick={toggleMenu}
+        className={css.menuButton}
+        aria-expanded={isOpen}
+      >
         Notes ▾
       </button>
       {isOpen && (
@@ -22,6 +27,7 @@ export default function TagsMenu() {
               <Link
                 href={tag === "All" ? "/notes/filter" : `/notes/filter/${tag}`}
                 className={css.menuLink}
+                onClick={() => setIsOpen(false)}
               >
                 {tag}
               </Link>

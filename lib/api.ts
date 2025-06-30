@@ -80,6 +80,10 @@ export async function deleteNote(id: number): Promise<Note> {
 
 // Fetch note details by ID
 export async function fetchNoteById(id: number): Promise<Note> {
+  if (isNaN(id) || id <= 0) {
+    throw new Error(`Invalid ID ${id}`);
+  }
+
   try {
     const res = await axios.get<Note>(`/notes/${id}`);
     return res.data;
