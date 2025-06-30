@@ -6,22 +6,26 @@ NoteHub is a multi-page application for creating, viewing, and managing notes. B
 
 ## 🚀 Features
 
-- 🔍 Search notes
-- 🧠 View details (SSR/CSR)
-- ➕ Create and edit notes
-- 🗑️ Delete notes
-- 🌐 Built with Server-Side Rendering (SSR) support
-- 📦 Caching and state via **TanStack Query**
+- 🔍 Search & Filter: Find notes by keyword or category
+- 🧩 Parallel Routes: Sidebar and modal previews with separate data streams
+- 🎛️ Route Interception: Open note details in a modal without full page reload
+- 🗂️ Logical Grouping: (public) and (private) routes without affecting URLs
+- ➕ Create, Edit, Delete: Full CRUD for notes
+- 🧠 SSR & CSR: Mix of server- and client-side rendering for best performance
+- ⚡ Data Caching: Powered by TanStack Query
+- 🎨 Styled with CSS Modules: Clean, modular styling
+- ⏳ Loading Indicators: Uses React Spinners for smooth UX
 
 ## 🗂 Project structure
-           06-notehub-nextjs/
+
+           07-routing-nextjs/
            ├── 📁app/         # App Router: routing, pages, layout, loading/error
            ├── 📁components/  # All UI components
            ├── 📁lib/         # API logic
            ├── 📁public/      # Static files (favicon, images, screenshots)
            ├── 📁types/       # Common TypeScript types (Note interfaces, etc.)
            ├── 📄.gitignore        # List files/folders that Git ignores
-           ├── 📄.prettierrс       # Prettier configuration  
+           ├── 📄.prettierrс       # Prettier configuration
            ├── 📄README.md         # Project documentation and setup instructions.
            ├── 📄eslint.config.mjs # ESLint configuration for code quality checking
            ├── 📄next.config.ts    # Next.js configuration
@@ -29,14 +33,14 @@ NoteHub is a multi-page application for creating, viewing, and managing notes. B
            ├── 📄package.json      # Main dependency, script, and project description file
            └── 📄tsconfig.json     # Configuration for TypeScript compiler
 
-
 ## ⚙️ Technologies
 
-- [Next.js 14+](https://nextjs.org/)
+- [ Next.js 15+ (App Router)](https://nextjs.org/)
 - [TypeScript](https://www.typescriptlang.org/)
-- [TanStack Query](https://tanstack.com/query/latest)
+- [TanStack Query (React Query)](https://tanstack.com/query/latest)
 - [Axios](https://axios-http.com/)
 - [CSS Modules](https://github.com/css-modules/css-modules)
+- [React Spinners](https://www.davidhu.io/react-spinners/)
 
 ## 📦 Getting Started
 
