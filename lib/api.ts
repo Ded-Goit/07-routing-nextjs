@@ -1,19 +1,7 @@
-//old file
-import axios from "axios";
+import apiClient from "@/lib/apiClient";
 import { Note } from "@/types/note";
+import { NoteTag } from "@/types/note";
 
-// API token check
-const API_KEY = process.env.NEXT_PUBLIC_NOTEHUB_TOKEN;
-if (!API_KEY) throw new Error("API token is not defined");
-
-// Axios configuration
-axios.defaults.baseURL = `https://notehub-public.goit.study/api`;
-axios.defaults.headers.common["Authorization"] = `Bearer ${API_KEY}`;
-
-// Pagination configuration
-const PER_PAGE = 12;
-
-// Types
 export interface NotesResponse {
   notes: Note[];
   totalPages: number;
@@ -22,7 +10,7 @@ export interface NotesResponse {
 export interface CreateNoteValues {
   title: string;
   content?: string;
-  tag: "Work" | "Personal" | "Meeting" | "Shopping" | "Todo";
+  tag: NoteTag;
 }
 
 interface SearchParams {
@@ -32,7 +20,8 @@ interface SearchParams {
   tag?: string;
 }
 
-// Fetch notes with optional search and pagination
+const PER_PAGE = 12;
+
 export async function fetchNotes(
   search: string,
   page: number,
@@ -43,7 +32,7 @@ export async function fetchNotes(
   if (tag) params.tag = tag;
 
   try {
-    const res = await axios.get<NotesResponse>("/notes", { params });
+    const res = await apiClient.get<NotesResponse>("/notes", { params });
     return res.data;
   } catch (error) {
     console.error("Error fetching notes:", error);
@@ -51,14 +40,13 @@ export async function fetchNotes(
   }
 }
 
-// Create a new note
 export async function createNote({
   title,
   content,
   tag,
 }: CreateNoteValues): Promise<Note> {
   try {
-    const res = await axios.post<Note>("/notes", {
+    const res = await apiClient.post<Note>("/notes", {
       title,
       content,
       tag,
@@ -70,10 +58,9 @@ export async function createNote({
   }
 }
 
-// Delete a note by ID
 export async function deleteNote(id: number): Promise<Note> {
   try {
-    const res = await axios.delete<Note>(`/notes/${id}`);
+    const res = await apiClient.delete<Note>(`/notes/${id}`);
     return res.data;
   } catch (error) {
     console.error(`Error deleting note with ID ${id}:`, error);
@@ -81,14 +68,13 @@ export async function deleteNote(id: number): Promise<Note> {
   }
 }
 
-// Fetch note details by ID
 export async function fetchNoteById(id: number): Promise<Note> {
   if (isNaN(id) || id <= 0) {
     throw new Error(`Invalid ID ${id}`);
   }
 
   try {
-    const res = await axios.get<Note>(`/notes/${id}`);
+    const res = await apiClient.get<Note>(`/notes/${id}`);
     return res.data;
   } catch (error) {
     console.error(`Error fetching note with ID ${id}:`, error);
