@@ -8,30 +8,48 @@ import NotesClient from "./Notes.client";
 import { Note } from "@/types/note";
 
 type NotesProps = {
-  params: Promise<{ slug: string[] }>;
+  params: Promise<{ slug?: string[] }>;
 };
 
 export default async function Notes({ params }: NotesProps) {
-  const { slug } = await params;
+  const resolvedParams = await params;
+
+  // Перевірка slug
+  const slug = resolvedParams?.slug;
+  const tag =
+    Array.isArray(slug) && slug.length > 0 && slug[0] !== "all" ? slug[0] : "";
+
   const queryClient = new QueryClient();
+
   const initialQuery: string = "";
   const initialPage: number = 1;
-  const tag: string = slug[0] === "all" ? "" : slug[0];
 
-  await queryClient.prefetchQuery({
-    queryKey: ["notes", initialQuery, initialPage, tag],
-    queryFn: () => fetchNotes(initialQuery, initialPage, tag),
-  });
+  try {
+    await queryClient.prefetchQuery({
+      queryKey: ["notes", initialQuery, initialPage, tag],
+      queryFn: () => fetchNotes(initialQuery, initialPage, tag),
+    });
+  } catch (error) {
+    console.error("Error prefetching notes:", error);
+  }
 
   const initialData = queryClient.getQueryData([
     "notes",
     initialQuery,
     initialPage,
     tag,
-  ]) as {
-    notes: Note[];
-    totalPages: number;
-  };
+  ]) as
+    | {
+        notes: Note[];
+        totalPages: number;
+      }
+    | undefined;
+
+  // Перевірка initialData
+  if (!initialData || !Array.isArray(initialData.notes)) {
+    console.warn("No valid initial data for notes.");
+    return <p>Failed to load notes.</p>;
+  }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
