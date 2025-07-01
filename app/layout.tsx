@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "NoteHub",
   description: "Application for creating and viewing notes",
   icons: {
-    icon: "/notehub.svg", // ← шлях до фавікону в /public
+    icon: "/notehub.svg",
   },
 };
 
@@ -24,11 +24,9 @@ export default function RootLayout({
       <body>
         <TanStackProvider>
           <Header />
-          <main style={{ flex: 1 }}>
-            {children}
-            {modal}
-          </main>
+          <main className="layout-main">{children}</main>
           <Footer />
+          {modal}
         </TanStackProvider>
       </body>
     </html>
